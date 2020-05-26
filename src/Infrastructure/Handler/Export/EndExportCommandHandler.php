@@ -8,7 +8,7 @@ declare(strict_types = 1);
 
 namespace Ergonode\Exporter\Infrastructure\Handler\Export;
 
-use Ergonode\Exporter\Domain\Command\Export\StartExportCommand;
+use Ergonode\Exporter\Domain\Command\Export\EndExportCommand;
 use Ergonode\Exporter\Domain\Repository\ExportProfileRepositoryInterface;
 use Ergonode\Exporter\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\Exporter\Infrastructure\Provider\ExportProcessorProvider;
@@ -16,7 +16,7 @@ use Webmozart\Assert\Assert;
 
 /**
  */
-class StartExportCommandHandler
+class EndExportCommandHandler
 {
     /**
      * @var ExportRepositoryInterface
@@ -49,21 +49,21 @@ class StartExportCommandHandler
     }
 
     /**
-     * @param StartExportCommand $command
+     * @param EndExportCommand $command
      *
      * @throws \ReflectionException
      */
-    public function __invoke(StartExportCommand $command)
+    public function __invoke(EndExportCommand $command)
     {
         $export = $this->exportRepository->load($command->getExportId());
         Assert::notNull($export);
         $exportProfile = $this->exportProfileRepository->load($export->getExportProfileId());
         Assert::notNull($exportProfile);
 
-        $export->start();
+        $export->end();
         $this->exportRepository->save($export);
 
         $processor = $this->provider->provide($exportProfile->getType());
-        $processor->start($exportProfile);
+        $processor->end($exportProfile);
     }
 }

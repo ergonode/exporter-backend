@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  */
-class ServiceExportCompilerPass implements CompilerPassInterface
+class ExportProcessCompilerPass implements CompilerPassInterface
 {
     public const TAG = 'export.export_processor_interface';
 
